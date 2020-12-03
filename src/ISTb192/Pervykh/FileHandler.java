@@ -44,11 +44,11 @@ public class FileHandler {
     }
 
     public static void addByte(int[] arr, int size, String name){
-        try(FileOutputStream out = new FileOutputStream(name+".byte")){
-            out.write(Integer.toString(size).getBytes());
+        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(name+".bin"))){
+            dos.writeInt(size);
             if(size > 0){
                 for (int i = 0; i < size; i++){
-                    out.write(Integer.toString(arr[i]).getBytes());
+                    dos.writeInt(arr[i]);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -59,19 +59,20 @@ public class FileHandler {
     }
 
     public static void fromByte(String name) {
-        try(FileInputStream fin = new FileInputStream(name+".byte"))
+        try(DataInputStream dos = new DataInputStream(new FileInputStream(name+".bin")))
         {
-            int k=-1;
-            while((k=fin.read())!=-1){
-                System.out.println("Исходный массив:");
-                byte[] buff = new byte[fin.available()];
-                fin.read(buff);
-                System.out.write(buff);
+            int size =dos.readInt();
+            int[] arr = new int[size];
+            System.out.println("Исходный массив:");
+            if(size > 0) {
+                for (int i = 0; i < size; i++){
+                    System.out.println(dos.readInt());
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Плохое имя файла");
         } catch (IOException e) {
-            System.out.println("Ошибка записи");
+            System.out.println("Ошибка чтения");
         }
     }
 }
